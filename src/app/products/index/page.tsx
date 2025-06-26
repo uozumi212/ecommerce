@@ -70,7 +70,7 @@ const ProductList: React.FC = () => {
             ) : (
                 <>
                         <input
-                            className="pl-4 py-2 bg-gray-100 rounded-lg w-full mb-6"
+                            className="pl-4 py-2 bg-gray-100 rounded-lg w-full mb-8"
                             type="text"
                             placeholder="検索"
                             value={searchTerm}
@@ -83,7 +83,7 @@ const ProductList: React.FC = () => {
                                 </div>
                             ) : (
                                     filteredProducts.map((product) => (
-                                        <div key={product.id} className="flex flex-row items-center mt-8 border-b pb-4">
+                                        <div key={product.id} className="flex flex-row items-center mt-2 border-b pb-4">
                                         {product.image_url && (
                                             <Link href={`/products/${product.id}`} className="flex-shrink-0 mr-6">
                                                 <img

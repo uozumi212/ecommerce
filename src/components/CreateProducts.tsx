@@ -14,6 +14,7 @@ interface FormData {
 const ProductRegistrationForm: React.FC = () => {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState('')
+    const [previewImage, setPreviewImage] = useState<string | null>(null)
     const router = useRouter()
 
     const {
@@ -22,6 +23,20 @@ const ProductRegistrationForm: React.FC = () => {
         formState: { errors },
         reset
     } = useForm<FormData>()
+    
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                setPreviewImage(e.target?.result as string)
+            }
+            reader.readAsDataURL(file)
+            // register('image_url', { required: true })
+        } else {
+            setPreviewImage(null)
+        }
+    }
 
     const uploadImage = async (file: File): Promise<string | null> => {
         const fileExt = file.name.split('.').pop()
@@ -74,6 +89,7 @@ const ProductRegistrationForm: React.FC = () => {
 
             setMessage('商品が登録されました!')
             reset()
+            setPreviewImage(null)
         } catch (error) {
             console.error('データベース登録エラー:', error)
             setMessage('商品の登録に失敗しました')
@@ -120,11 +136,24 @@ const ProductRegistrationForm: React.FC = () => {
                     <label className="block text-sm font-medium text-gray-700">画像</label>
                     <input
                         type="file"
+                        accept="image/*"
                         {...register('image_url')}
+                        onChange={handleImageChange}
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     />
                     {errors.image_url &&
                         <p className="mt-2 text-sm text-red-600">{errors.image_url.message}</p>}
+                    {/* 画像プレビュー */}
+                    {previewImage && (
+                        <div className="mt-4">
+                            <p className="text-sm text-gray-600 mb-2">プレビュー：</p>
+                            <img 
+                                src={previewImage}
+                                alt="プレビュー"
+                                className="w-full h-64 object-cover"
+                            />
+                        </div>
+                    )}
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">商品説明</label>
