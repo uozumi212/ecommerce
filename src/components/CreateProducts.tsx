@@ -1,14 +1,15 @@
 'use client'
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { supabase, Product } from '../utils/supabaseClient';
-import { useRouter } from 'next/navigation'
+import React, {useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {supabase, Product} from '../utils/supabaseClient';
+import {useRouter} from 'next/navigation'
 
 interface FormData {
     name: string
     description: string
     price: number
     image_url: FileList
+    quantity: number
 }
 
 const ProductRegistrationForm: React.FC = () => {
@@ -20,10 +21,10 @@ const ProductRegistrationForm: React.FC = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: {errors},
         reset
     } = useForm<FormData>()
-    
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
@@ -42,7 +43,7 @@ const ProductRegistrationForm: React.FC = () => {
         const fileExt = file.name.split('.').pop()
         const fileName = `${Math.random()}.${fileExt}`
         const filePath = `products/${fileName}`
-        const { error } = await supabase.storage
+        const {error} = await supabase.storage
             .from('product-image')
             .upload(filePath, file)
         if (error) {
@@ -50,7 +51,7 @@ const ProductRegistrationForm: React.FC = () => {
             throw error
         }
 
-        const { data } = supabase.storage
+        const {data} = supabase.storage
             .from('product-image')
             .getPublicUrl(filePath)
         return data.publicUrl
@@ -77,10 +78,11 @@ const ProductRegistrationForm: React.FC = () => {
                 name: data.name,
                 price: data.price,
                 image_url: imageUrl,
-                description: data.description
+                description: data.description,
+                quantity: data.quantity
             }
 
-            const { error } = await supabase.from('products').insert([productData])
+            const {error} = await supabase.from('products').insert([productData])
             if (error) {
                 console.error('データベース登録エラー:', error)
             }
@@ -103,20 +105,20 @@ const ProductRegistrationForm: React.FC = () => {
             <h2 className="text-2xl font-bold text-center">商品登録</h2>
 
             {message && (
-                <div className={`mb-4 mt-4 text-center text-white border-4 ${message === '商品が登録されました!' 
-                    ? 'bg-green-400' 
+                <div className={`mb-4 mt-4 text-center text-white border-4 ${message === '商品が登録されました!'
+                    ? 'bg-green-400'
                     : 'bg-red-400'
                 }`}>
                     {message}
-               </div>
-                )}
+                </div>
+            )}
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700">商品名</label>
                     <input
                         type="text"
-                        {...register('name', { required: true })}
+                        {...register('name', {required: true})}
                         className="pl-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     />
                     {errors.name &&
@@ -126,7 +128,7 @@ const ProductRegistrationForm: React.FC = () => {
                     <label className="block text-sm font-medium text-gray-700">価格</label>
                     <input
                         type="number"
-                        {...register('price', { required: true })}
+                        {...register('price', {required: true})}
                         className="pl-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     />
                     {errors.price &&
@@ -147,7 +149,7 @@ const ProductRegistrationForm: React.FC = () => {
                     {previewImage && (
                         <div className="mt-4">
                             <p className="text-sm text-gray-600 mb-2">プレビュー：</p>
-                            <img 
+                            <img
                                 src={previewImage}
                                 alt="プレビュー"
                                 className="w-full h-64 object-cover"
@@ -156,9 +158,23 @@ const ProductRegistrationForm: React.FC = () => {
                     )}
                 </div>
                 <div>
+                    <label className="block text-sm font-medium text-gray-700">数量</label>
+                    <select
+                        {...register('quantity', {required: true, valueAsNumber: true})}
+                        className="mt-1 pl-1 block w-1/12 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    >
+                        <option value="">選択してください</option>
+                        {[...Array(10).keys()].map(i => (
+                            <option key={i + 1} value={i + 1}>{i + 1}</option>
+                        ))}
+                    </select>
+                    {errors.quantity &&
+                        <p className="mt-2 text-sm text-red-600">{errors.quantity.message}</p>}
+                </div>
+                <div>
                     <label className="block text-sm font-medium text-gray-700">商品説明</label>
                     <textarea
-                        {...register('description', { required: true })}
+                        {...register('description', {required: true})}
                         className="pl-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     />
                     {errors.description &&
@@ -169,7 +185,7 @@ const ProductRegistrationForm: React.FC = () => {
                     disabled={loading}
                     className="mt-12 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                {loading ? '登録中...' : '商品を登録'}
+                    {loading ? '登録中...' : '商品を登録'}
                 </button>
             </form>
         </div>

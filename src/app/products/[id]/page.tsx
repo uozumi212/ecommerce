@@ -43,6 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<any> {
             title: product.name,
             description: product.description,
             images: product.image_url ? [product.image_url] : [],
+            quantity: product.quantity,
         },
     }
 }

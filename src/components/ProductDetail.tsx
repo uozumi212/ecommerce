@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Product, supabase } from '../utils/supabaseClient'
@@ -105,6 +105,11 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                             <h1 className="text-2xl font-bold text-gray-900 mb-4 mt-4">
                                 {product.name}
                             </h1>
+                            {product.quantity === 0 ? (
+                                <p className="text-lg font-semibold mb-2">在庫：✖︎</p>
+                            ) : (
+                                <p className="text-lg font-semibold mb-2">在庫：⚪︎</p>
+                            )}
                             <p className="text-2xl font-bold text-blue mb-4">
                                 {formatPrice(product.price)}
                             </p>

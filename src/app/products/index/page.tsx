@@ -3,7 +3,7 @@ import React from 'react';
 import {useState, useEffect} from 'react'
 import {supabase, Product} from '../../../utils/supabaseClient'
 import Link from 'next/link'
-import { set } from 'react-hook-form';
+import {set} from 'react-hook-form';
 
 const ProductList: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([])
@@ -14,7 +14,7 @@ const ProductList: React.FC = () => {
     useEffect(() => {
         fetchProducts()
     }, [])
-    
+
     useEffect(() => {
         if (searchTerm.trim() === '') {
             setFilteredProducts(products)
@@ -46,7 +46,7 @@ const ProductList: React.FC = () => {
             setLoading(false)
         }
     }
-    
+
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value)
     }
@@ -69,40 +69,49 @@ const ProductList: React.FC = () => {
                 </div>
             ) : (
                 <>
-                        <input
-                            className="pl-4 py-2 bg-gray-100 rounded-lg w-full mb-8"
-                            type="text"
-                            placeholder="検索"
-                            value={searchTerm}
-                            onChange={handleSearch}
-                        />
-                        <div className="grid grid-cols-1 gap-6">
-                            {filteredProducts.length === 0 ? (
-                                <div className="text-center p-8">
-                                    <h2 className="text-gray-500 text-lg">商品が見つかりません。</h2>
-                                </div>
-                            ) : (
-                                    filteredProducts.map((product) => (
-                                        <div key={product.id} className="flex flex-row items-center mt-2 border-b pb-4">
-                                        {product.image_url && (
-                                            <Link href={`/products/${product.id}`} className="flex-shrink-0 mr-6">
-                                                <img
-                                                    src={product.image_url}
-                                                    alt={product.name}
-                                                    className="w-80 h-80 object-cover rounded"
-                                                />
-                                            </Link>
+                    <input
+                        className="pl-4 py-2 bg-gray-100 rounded-lg w-full mb-8"
+                        type="text"
+                        placeholder="検索"
+                        value={searchTerm}
+                        onChange={handleSearch}
+                    />
+                    <div className="grid grid-cols-1 gap-6">
+                        {filteredProducts.length === 0 ? (
+                            <div className="text-center p-8">
+                                <h2 className="text-gray-500 text-lg">商品が見つかりません。</h2>
+                            </div>
+                        ) : (
+                            filteredProducts.map((product) => (
+                                <div key={product.id} className="flex flex-row items-center mt-2 border-b pb-4">
+                                    {product.image_url && (
+                                        <Link href={`/products/${product.id}`} className="flex-shrink-0 mr-6">
+                                            <img
+                                                src={product.image_url}
+                                                alt={product.name}
+                                                className="w-80 h-80 object-cover rounded"
+                                            />
+                                        </Link>
+                                    )}
+                                    <div className="flex-grow text-left">
+                                        <Link href={`/products/${product.id}`}><h3
+                                            className="text-lg font-semibold mb-2">商品名：{product.name}</h3></Link>
+                                        <Link href={`/products/${product.id}`}><p
+                                            className="text-lg font-semibold mb-2">商品説明：{product.description}</p>
+                                        </Link>
+                                        {product.quantity === 0 ? (
+                                            <p className="text-lg font-semibold mb-2">在庫：✖︎</p>
+                                        ) : (
+                                            <p className="text-lg font-semibold mb-2">在庫：⚪︎</p>
                                         )}
-                                        <div className="flex-grow text-left">
-                                            <Link href={`/products/${product.id}`}><h3 className="text-lg font-semibold mb-2">商品名：{product.name}</h3></Link>
-                                            <Link href={`/products/${product.id}`}><p className="text-lg font-semibold mb-2">商品説明：{product.description}</p></Link>
-                                            <Link href={`/products/${product.id}`}> <p className="text-lg font-semibold ">金額：{product.price}円</p></Link>
-                                        </div>
+                                        <Link href={`/products/${product.id}`}><p
+                                            className="text-lg font-semibold ">金額：{product.price}円</p></Link>
                                     </div>
-                                    ))
-                            )}
+                                </div>
+                            ))
+                        )}
 
-                            {/* {products.map((product) => (
+                        {/* {products.map((product) => (
                                 <div key={product.id} className="flex flex-row items-center mt-8 border-b pb-4">
                                     {product.image_url && (
                                         <Link href={`/products/${product.id}`} className="flex-shrink-0 mr-6">
