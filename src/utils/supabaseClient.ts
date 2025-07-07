@@ -15,3 +15,14 @@ export interface Product {
     created_at: string
     updated_at: string
 }
+
+export interface User {
+    id: string
+    name: string
+    role: number
+    email: string
+    password: string
+    email_verified_at: string
+    created_at: string
+    updated_at: string
+}

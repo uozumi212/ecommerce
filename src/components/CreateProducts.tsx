@@ -161,7 +161,7 @@ const ProductRegistrationForm: React.FC = () => {
                     <label className="block text-sm font-medium text-gray-700">数量</label>
                     <select
                         {...register('quantity', {required: true, valueAsNumber: true})}
-                        className="mt-1 pl-1 block w-1/12 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        className="mt-1 pl-1 block w-4/12 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     >
                         <option value="">選択してください</option>
                         {[...Array(10).keys()].map(i => (

@@ -35,7 +35,7 @@ export default function Home() {
 
             setTimeout(() => {
                 setNotification(null)
-            }, 10000)
+            }, 3000)
         }
     }, [searchParams])
 
@@ -46,7 +46,7 @@ export default function Home() {
             {notification && (
                 <div className={`mb-4 mt-4 p-4 rounded-lg mx-auto w-2/12 text-white font-semibold 
                 ${notification.type === 'success'
-                    ? 'bg-green-300'
+                    ? 'bg-green-500'
                     : 'bg-red-400'
                 }
                 `}>
