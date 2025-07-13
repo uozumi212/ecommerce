@@ -38,7 +38,7 @@ export async function middleware(req: NextRequest) {
         // }
 
         // 保護されたルートへのアクセス時の処理
-        if (req.nextUrl.pathname.startsWith('/products')) {
+        if (req.nextUrl.pathname === '/products/new') {
             if (!session) {
                 // 未ログインの場合はログインページへ
                 return NextResponse.redirect(new URL('/auth/login', req.url));
@@ -57,5 +57,6 @@ export const config = {
     matcher: [
         '/auth/:path*',
         '/products/:path*',
+        '/products/new',
     ],
 }

@@ -36,9 +36,9 @@ export default function SignInForm() {
                 <div>
                     <label className="block text-sm font-medium text-gray-700">メールアドレス</label>
                     <input
-                        type="text"
+                        type="email"
                         {...register('email')}
-                        className="pl-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        className="pl-2 mt-1 block w-full rounded-md bg-gray-100 border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     />
                     {errors.email && (
                         <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>
@@ -49,7 +49,7 @@ export default function SignInForm() {
                     <input
                         type="password"
                         {...register('password')}
-                        className="pl-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        className="pl-2 mt-1 block w-full rounded-md bg-gray-100 border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     />
                     {errors.password && (
                         <p className="mt-2 text-sm text-red-600">{errors.password.message}</p>
@@ -59,7 +59,7 @@ export default function SignInForm() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="mt-12 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="mt-8 w-1/3 flex mx-auto justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                     {loading ? '処理中...' : 'ログイン'}
                 </button>
