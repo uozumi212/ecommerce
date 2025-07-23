@@ -46,21 +46,21 @@ export const useAuth = () => {
         return;
       }
 
-      // if (authData.user) {
-      //   // usersテーブルにユーザー情報を保存
-      //   const { error: profileError } = await supabase.from("users").insert([
-      //     {
-      //       id: authData.user.id,
-      //       name: name,
-      //       role: role,
-      //       email: email,
-      //       password: password,
-      //       created_at: new Date().toISOString(),
-      //       updated_at: new Date().toISOString(),
-      //     },
-      //   ]);
-      //   if (profileError) throw profileError;
-      // }
+      if (data.user) {
+        // usersテーブルにユーザー情報を保存
+        const { error: profileError } = await supabase.from("users").insert([
+          {
+            id: data.user.id,
+            name: name,
+            role: role,
+            email: email,
+            password: password,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          },
+        ]);
+        if (profileError) throw profileError;
+      }
       if (data?.user) {
 
         // router.push("/auth/verify");

@@ -3,7 +3,7 @@ import React from 'react';
 import {useState, useEffect} from 'react'
 import {supabase, Product} from '../../../utils/supabaseClient'
 import Link from 'next/link'
-import {set} from 'react-hook-form';
+import FavoriteButton from '@/components/FavoriteButton';
 
 const ProductList: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([])
@@ -106,29 +106,12 @@ const ProductList: React.FC = () => {
                                         )}
                                         <Link href={`/products/${product.id}`}><p
                                             className="text-lg font-semibold ">金額：{product.price}円</p></Link>
+                                        <FavoriteButton productId={product.id} />
                                     </div>
                                 </div>
                             ))
                         )}
 
-                        {/* {products.map((product) => (
-                                <div key={product.id} className="flex flex-row items-center mt-8 border-b pb-4">
-                                    {product.image_url && (
-                                        <Link href={`/products/${product.id}`} className="flex-shrink-0 mr-6">
-                                            <img
-                                                src={product.image_url}
-                                                alt={product.name}
-                                                className="w-80 h-80 object-cover rounded"
-                                            />
-                                        </Link>
-                                    )}
-                                    <div className="flex-grow text-left">
-                                        <Link href={`/products/${product.id}`}><h3 className="text-lg font-semibold mb-2">商品名：{product.name}</h3></Link>
-                                        <Link href={`/products/${product.id}`}><p className="text-lg font-semibold mb-2">商品説明：{product.description}</p></Link>
-                                        <Link href={`/products/${product.id}`}> <p className="text-lg font-semibold ">金額：{product.price}円</p></Link>
-                                    </div>
-                                </div>
-                            ))} */}
                     </div>
                 </>
 

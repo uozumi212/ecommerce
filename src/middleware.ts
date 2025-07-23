@@ -41,7 +41,7 @@ export async function middleware(req: NextRequest) {
         if (req.nextUrl.pathname === '/products/new') {
             if (!session) {
                 // 未ログインの場合はログインページへ
-                return NextResponse.redirect(new URL('/auth/login', req.url));
+                return NextResponse.redirect(new URL('/', req.url));
             }
         }
 

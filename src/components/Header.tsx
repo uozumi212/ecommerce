@@ -1,16 +1,16 @@
 'use client'
 import React from 'react';
 import Link from 'next/link';
-import { BsBag } from 'react-icons/bs';
-import { useAuth } from './UseAuth';
-import { useEffect, useState } from 'react';
-import { supabase } from "../utils/supabaseClient";
+import {BsBag} from 'react-icons/bs';
+import {useAuth} from './UseAuth';
+import {useEffect, useState} from 'react';
+import {supabase} from "../utils/supabaseClient";
 
 const Header = () => {
-    const { user, signOut, loading } = useAuth();
+    const {user, signOut, loading} = useAuth();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    console.log('user:',user);
+    console.log('user:', user);
 
     useEffect(() => {
         if (user) {
@@ -39,9 +39,13 @@ const Header = () => {
         <header className="bg-black text-white p-4">
             <div className="flex justify-between">
                 <ul className="flex mt-1">
-                    <BsBag className="text-2xl mr-2" />
+                    <BsBag className="text-2xl mr-2"/>
                     <li><Link href="/">ホーム</Link></li>
-                    <li className="ml-2"><Link href="products/new">商品登録</Link></li>
+                    {user && user.user_metadata?.role === 1 ?
+                        <li className="ml-2">
+                            <Link href="products/new">商品登録</Link>
+                        </li> : ""
+                    }
                 </ul>
                 <ul className="flex mt-1 justify-end">
                     {user && (
@@ -54,13 +58,15 @@ const Header = () => {
                                 disabled={loading}
                                 className="text-white hover:text-gray-300 transition duration-150"
                             >
-                                {loading ? 'ログアウト中...' : 'ログアウト' }
+                                {loading ? 'ログアウト中...' : 'ログアウト'}
                             </button>
                         </li>
                     ) : (
                         <>
-                            <li className="hover:text-gray-300 transition duration-150"><Link href="/auth/signin">ログイン</Link></li>
-                            <li className="ml-2 hover:text-gray-300 transition duration-150"><Link href="/auth/signup">会員登録</Link></li>
+                            <li className="hover:text-gray-300 transition duration-150"><Link
+                                href="/auth/signin">ログイン</Link></li>
+                            <li className="ml-2 hover:text-gray-300 transition duration-150"><Link
+                                href="/auth/signup">会員登録</Link></li>
                         </>
                     )}
                 </ul>

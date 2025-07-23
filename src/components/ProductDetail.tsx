@@ -6,6 +6,9 @@ import { Product, supabase } from '../utils/supabaseClient'
 import Header from './Header'
 import Footer from './Footer'
 import { set } from 'react-hook-form'
+import FavoriteButton from '../components/FavoriteButton'
+
+
 
 interface ProductDetailProps {
     product: Product
@@ -126,6 +129,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
                 {/* 購入ボタン */}
                 <div className="text-center">
+                    <FavoriteButton productId={product.id} />
                     <button
                         onClick={handleBuyNow}
                         className="w-1/4 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
