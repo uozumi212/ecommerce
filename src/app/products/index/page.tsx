@@ -65,7 +65,7 @@ const ProductList: React.FC = () => {
 
             {products.length === 0 ? (
                 <div className="text-center p-8">
-                    <h2 className="text-gray-500 text-lg">商品の画像がありません。</h2>
+                    <h2 className="text-gray-500 text-lg">商品がありません。</h2>
                 </div>
             ) : (
                 <>
@@ -111,10 +111,8 @@ const ProductList: React.FC = () => {
                                 </div>
                             ))
                         )}
-
                     </div>
                 </>
-
             )}
         </div>
     )

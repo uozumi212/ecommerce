@@ -10,8 +10,6 @@ const Header = () => {
     const {user, signOut, loading} = useAuth();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    console.log('user:', user);
-
     useEffect(() => {
         if (user) {
             setIsAuthenticated(true);
@@ -41,11 +39,13 @@ const Header = () => {
                 <ul className="flex mt-1">
                     <BsBag className="text-2xl mr-2"/>
                     <li><Link href="/">ホーム</Link></li>
-                    {user && user.user_metadata?.role === 1 ?
+                    {user && user.role === 1 ? (
                         <li className="ml-2">
-                            <Link href="products/new">商品登録</Link>
-                        </li> : ""
-                    }
+                            <Link href="/products/new">商品登録</Link>
+                        </li>
+                    ) : (
+                    ""
+                    )}
                 </ul>
                 <ul className="flex mt-1 justify-end">
                     {user && (

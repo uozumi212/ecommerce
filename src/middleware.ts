@@ -39,16 +39,30 @@ export async function middleware(req: NextRequest) {
 
         // 保護されたルートへのアクセス時の処理
         if (req.nextUrl.pathname === '/products/new') {
-            if (!session) {
-                // 未ログインの場合はログインページへ
-                return NextResponse.redirect(new URL('/', req.url));
-            }
+            // if (!session) {
+            //     console.log('session:', session);
+            //     // 未ログインの場合はログインページへ
+            //     return NextResponse.redirect(new URL('/', req.url));
+            // }
+
+            // // ユーザーのロール情報を取得
+            // const { data: user, error } = await supabase
+            //     .from('users')
+            //     .select('role')
+            //     .eq('id', session.user.id)
+            //     .single();
+            
+            //     console.log("user:", user, "error:", error);
+
+            // if (user?.role !== 1) {
+            //     return NextResponse.redirect(new URL('/', req.url));
+            // }
         }
 
         return res;
     } catch (error) {
-        console.error(error);
-        return res;
+        console.error('エラーが発生しました:', error); // エラーをコンソールに出力
+        return NextResponse.json({ error: 'エラーが発生しました' }, { status: 500 });
     }
 
 }

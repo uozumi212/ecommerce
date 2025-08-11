@@ -34,7 +34,7 @@ export default function FavoriteButton ({ productId }: FavoriteButtonProps) {
 				.select('*')
 				.eq('user_id', user?.id)
 				.eq('product_id', productId)
-				.single();
+				.maybeSingle();
 			
 			if (error) {
 				console.log('いいねエラー:', error);
