@@ -8,6 +8,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { set } from "react-hook-form";
 import FavoriteButton from "../components/FavoriteButton";
+import { loadStripe } from "@stripe/stripe-js";
 
 interface ProductDetailProps {
   product: Product;
@@ -22,6 +23,9 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const { user, signOut, loading } = useAuth();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const stripePromise = loadStripe(
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+  );
 
   useEffect(() => {
     if (user) {
@@ -49,8 +53,45 @@ export default function ProductDetail({ product }: ProductDetailProps) {
     console.log(`商品ID: ${product.id} をカートに追加しました。`);
   };
 
-  const handleBuyNow = () => {
-    console.log(`商品ID: ${product.id} を購入しました。`);
+  const handleBuyNow = async () => {
+    try {
+      const items = [
+        {
+          name: product.name,
+          price: product.price,
+          quantity: selectedQuantity,
+        },
+      ];
+
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ items }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Stripeセッション生成に失敗しました");
+      }
+
+      const { sessionId } = await response.json();
+      const stripe = await stripePromise;
+      if (!stripe) {
+        throw new Error("Stripeの初期化に失敗しました");
+      }
+
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+      if (error) {
+        console.error("Stripe Checkoutエラー:", error);
+        alert("購入処理に失敗しました。後ほど再度お試しください。");
+      } else {
+        console.log("Stripe Checkoutにリダイレクトしました");
+      }
+    } catch (error) {
+      console.error("購入処理エラー:", error);
+      alert("購入処理に失敗しました。後ほど再度お試しください。");
+    }
   };
 
   const formatPrice = (price: number) => {
@@ -179,12 +220,6 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           >
             今すぐ購入
           </button>
-          {/* <button
-                        onClick={handleAddToCart}
-                        className="w-1/4 ml-2 bg-gray-100 text-gray-900 py-3 px-6 rounded-lg font-semibold mt-4 hover:bg-gray-200 transition-colors border border-gray-300"
-                    >
-                        カートに追加
-                    </button> */}
           {/* 削除ボタン */}
           {user && user.role === 1 && (
             <button
