@@ -4,6 +4,7 @@
 
 - [目次](#目次)
 - [本アプリ作成について](#本アプリ作成について)
+  - [こだわり・設計思想](#こだわり設計思想)
 - [使用技術一覧](#使用技術一覧)
 - [プロジェクト名](#プロジェクト名)
 - [プロジェクトについて](#プロジェクトについて)
@@ -16,6 +17,13 @@
 ## 本アプリ作成について
 本アプリはReact,Next.js,Typescriptを用いて開発したecommerceアプリです。学習も兼ねて、ニーズのある通販サイトのテンプレートとして活用できるサービスをイメージして作りました。その他汎用性のある認証機能や一般的なCRUD機能、いいね機能などの実装など幅広く開発ができる余地があるかと思い作成に至りました。
 
+
+### こだわり・設計思想
+- **再利用性・カスタマイズ性**：各機能はコンポーネント単位で切り出しているので、組み込みやすさ・修正のしやすさを意識しています。
+- **型安全性**：TypeScript による明確な型定義で、運用や保守のしやすさを向上させました。
+- **デザインと操作性**：TailwindCSS による柔軟なスタイリングと、シンプルなUIを心がけました。
+- **セキュリティ**：Supabaseによる認証で、セキュリティ面にも配慮しています。
+- **技術習得**：新しい技術スタックの知見を深めることも目的としています。
 
 ## 使用技術一覧
 
@@ -63,6 +71,7 @@ React,Typescript,Next.jsの学習を含めてアプリの作成
 ## ディレクトリ構成
 <pre> 
 .
+├── .DS_Store
 ├── .env.local
 ├── .eslintrc.json
 ├── .gitignore
@@ -75,33 +84,57 @@ React,Typescript,Next.jsの学習を含めてアプリの作成
 │   ├── next-ecommerce.iml
 │   ├── vcs.xml
 │   └── workspace.xml
+├── DB_ER図.drawio.png
+├── i18n.js
 ├── next-env.d.ts
 ├── next.config.js
 ├── package-lock.json
 ├── package.json
 ├── postcss.config.js
 ├── public
+│   ├── locales
+│   │   └── ja
+│   │       └── translation.json
 │   ├── next.svg
 │   └── vercel.svg
 ├── README.md
 ├── src
 │   ├── app
+│   │   ├── api
+│   │   │   ├── checkout
+│   │   │   └── checkout-session
+│   │   ├── auth
+│   │   │   ├── signin
+│   │   │   └── signup
+│   │   ├── cancel
+│   │   │   └── page.tsx
 │   │   ├── favicon.ico
 │   │   ├── globals.css
 │   │   ├── layout.tsx
 │   │   ├── page.tsx
-│   │   └── products
-│   │       ├── [id]
-│   │       │   └── page.tsx
-│   │       ├── index
-│   │       │   └── page.tsx
-│   │       └── new
-│   │           └── page.tsx
+│   │   ├── pages
+│   │   ├── products
+│   │   │   ├── [id]
+│   │   │   ├── index
+│   │   │   └── new
+│   │   ├── scripts
+│   │   │   └── UpdateRoleApi.ts
+│   │   └── success
+│   │       └── page.tsx
 │   ├── components
+│   │   ├── CancelPage.tsx
 │   │   ├── CreateProducts.tsx
+│   │   ├── FavoriteButton.tsx
 │   │   ├── Footer.tsx
 │   │   ├── Header.tsx
-│   │   └── ProductDetail.tsx
+│   │   ├── Logout.tsx
+│   │   ├── next-i18next.config.js
+│   │   ├── ProductDetail.tsx
+│   │   ├── SignInForm.tsx
+│   │   ├── SignUpForm.tsx
+│   │   ├── SuccessPage.tsx
+│   │   └── UseAuth.tsx
+│   ├── middleware.ts
 │   └── utils
 │       └── supabaseClient.ts
 ├── tailwind.config.ts
