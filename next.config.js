@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   images: {
-    domains: ['lmipnlxdpnktheahopee.supabase.co'],
+    domains: ["lmipnlxdpnktheahopee.supabase.co"],
   },
   webpack: (config, { isServer }) => {
     // クライアントサイドのみの設定
@@ -11,15 +12,18 @@ const nextConfig = {
         fs: false,
         net: false,
         tls: false,
-        crypto: require.resolve('crypto-browserify'),
+        crypto: require.resolve("crypto-browserify"),
       };
     }
-    
-    config.externals = [...(config.externals || []), {
-      'utf-8-validate': 'commonjs utf-8-validate',
-      'bufferutil': 'commonjs bufferutil',
-    }];
-    
+
+    config.externals = [
+      ...(config.externals || []),
+      {
+        "utf-8-validate": "commonjs utf-8-validate",
+        bufferutil: "commonjs bufferutil",
+      },
+    ];
+
     return config;
   },
 };

@@ -1,0 +1,8 @@
+{
+  "validation": {
+    "email": "メールアドレス形式で入力してください",
+    "email_required": "メールアドレスは必須です",
+    "password_min": "パスワードは5文字以上で入力してください",
+    "password_required": "パスワードは必須です"
+  }
+}
