@@ -1,8 +1,7 @@
-'use client'
+"use client";
 import { useRouter } from "next/navigation";
 import { supabase } from "../utils/supabaseClient";
 import { useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect } from "react";
 
 export const useAuth = () => {
@@ -23,21 +22,20 @@ export const useAuth = () => {
       setError(null);
 
       // メールアドレスの形式を確認
-        if (!email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
-            throw new Error('有効なメールアドレスを入力してください。');
-        }
-
+      if (!email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+        throw new Error("有効なメールアドレスを入力してください。");
+      }
 
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
-            data: {
-                name: name,
-                role: role,
-            },
-          emailRedirectTo: `${window.location.origin}/auth/callback`
-        }
+          data: {
+            name: name,
+            role: role,
+          },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
 
       if (error) {
@@ -62,11 +60,9 @@ export const useAuth = () => {
         if (profileError) throw profileError;
       }
       if (data?.user) {
-
         // router.push("/auth/verify");
         router.push("/");
       }
-
     } catch (error: any) {
       console.error("サインアップエラー:", error);
       setError(error.message);
@@ -104,7 +100,7 @@ export const useAuth = () => {
 
       await supabase.auth.signOut();
       router.push("/auth/signin");
-      alert('ログアウトしました');
+      alert("ログアウトしました");
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -115,15 +111,18 @@ export const useAuth = () => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
         if (error) throw error;
 
         if (session?.user) {
           const { data: user, error: userError } = await supabase
-              .from('users')
-              .select('*')
-              .eq('id', session.user.id)
-              .single();
+            .from("users")
+            .select("*")
+            .eq("id", session.user.id)
+            .single();
           if (userError) throw userError;
           setUser({ ...session.user, ...user });
         }
@@ -137,13 +136,15 @@ export const useAuth = () => {
 
     getUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
         const { data: user, error: userError } = supabase
-            .from('users')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
+          .from("users")
+          .select("*")
+          .eq("id", session.user.id)
+          .single();
         if (userError) throw userError;
         setUser({ ...session.user, ...user });
       } else {
@@ -155,7 +156,7 @@ export const useAuth = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase])
+  }, [supabase]);
 
   return {
     signUp,

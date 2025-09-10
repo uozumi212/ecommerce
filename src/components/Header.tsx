@@ -4,7 +4,6 @@ import Link from "next/link";
 import { BsBag } from "react-icons/bs";
 import { useAuth } from "./UseAuth";
 import { useEffect, useState } from "react";
-import { supabase } from "../utils/supabaseClient";
 
 const Header = () => {
   const { user, signOut, loading } = useAuth();

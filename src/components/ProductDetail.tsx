@@ -4,11 +4,9 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useAuth } from "./UseAuth";
 import { Product, supabase } from "../utils/supabaseClient";
-import Header from "./Header";
-import Footer from "./Footer";
-import { set } from "react-hook-form";
 import FavoriteButton from "../components/FavoriteButton";
 import { loadStripe } from "@stripe/stripe-js";
+import Layout from "./Layout";
 
 interface ProductDetailProps {
   product: Product;
@@ -17,7 +15,7 @@ interface ProductDetailProps {
 export default function ProductDetail({ product }: ProductDetailProps) {
   const router = useRouter();
   const [imageError, setImageError] = useState(false);
-  const [quantities, setQuantities] = useState([]);
+  const [quantities, setQuantities] = useState<number[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const { user, signOut, loading } = useAuth();
@@ -45,7 +43,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
     }
   }, [product.quantity]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedQuantity(Number(e.target.value));
   };
 
@@ -133,8 +131,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   };
 
   return (
-    <>
-      <Header />
+    <Layout>
       <div className="container mx-auto px-4 py-8">
         {/* パンクズリスト */}
         <nav className="mb-6 text-sm text-gray-600">
@@ -231,7 +228,6 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           )}
         </div>
       </div>
-      <Footer />
-    </>
+    </Layout>
   );
 }

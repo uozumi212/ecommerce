@@ -1,20 +1,17 @@
-import React from 'react';
-import ProductRegistrationForm from '../../../components/CreateProducts'
-import Header from '../../../components/Header'
-import Footer from '../../../components/Footer'
+import React from "react";
+import ProductRegistrationForm from "../../../components/CreateProducts";
+import Layout from "@/components/Layout";
 
 const RegisterProductPage: React.FC = () => {
-    return (
-        <>
-            <Header />
-                <div className="min-h-screen bg-gray-100 py-8">
-                    <div className="container mx-auto">
-                        <ProductRegistrationForm />
-                    </div>
-                </div>
-            <Footer />
-        </>
-    )
-}
+  return (
+    <Layout>
+      <div className="min-h-screen bg-gray-100 py-8">
+        <div className="container mx-auto">
+          <ProductRegistrationForm />
+        </div>
+      </div>
+    </Layout>
+  );
+};
 
 export default RegisterProductPage;
