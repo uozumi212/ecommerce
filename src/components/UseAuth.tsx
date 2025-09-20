@@ -60,7 +60,6 @@ export const useAuth = () => {
         if (profileError) throw profileError;
       }
       if (data?.user) {
-        // router.push("/auth/verify");
         router.push("/");
       }
     } catch (error: any) {
@@ -77,15 +76,32 @@ export const useAuth = () => {
       setLoading(true);
       setError(null);
 
-      const { error } = await supabase.auth.signInWithPassword({
+      // ログイン実行
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
 
-      router.push("/");
+      // セッションCookieを設定するためには、リダイレクトよりも
+      // セッションレスポンスを返すことが重要
+      if (data.session?.user) {
+        const { data: userData, error: userError } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", data.session.user.id)
+          .single();
+
+        if (userError) throw userError;
+        setUser({ ...data.session.user, ...userData });
+      }
+
+      // セッションが確実に保存されるように完全リロード
+      window.location.href = "/";
+      return data;
     } catch (error: any) {
+      console.error("ログインエラー:", error.message);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -99,6 +115,9 @@ export const useAuth = () => {
       setError(null);
 
       await supabase.auth.signOut();
+      window.location.href = "/auth/signin";
+
+      router.refresh();
       router.push("/auth/signin");
       alert("ログアウトしました");
     } catch (error: any) {
@@ -118,13 +137,13 @@ export const useAuth = () => {
         if (error) throw error;
 
         if (session?.user) {
-          const { data: user, error: userError } = await supabase
+          const { data: userData, error: userError } = await supabase
             .from("users")
             .select("*")
             .eq("id", session.user.id)
             .single();
           if (userError) throw userError;
-          setUser({ ...session.user, ...user });
+          setUser({ ...session.user, ...userData });
         }
       } catch (error: any) {
         console.error("サインインエラー:", error);
@@ -138,25 +157,31 @@ export const useAuth = () => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+
       if (session?.user) {
-        const { data: user, error: userError } = supabase
-          .from("users")
-          .select("*")
-          .eq("id", session.user.id)
-          .single();
-        if (userError) throw userError;
-        setUser({ ...session.user, ...user });
+        try {
+          const { data: userData, error: userError } = await supabase
+            .from("users")
+            .select("*")
+            .eq("id", session.user.id)
+            .single();
+          if (userError) throw userError;
+          setUser({ ...session.user, ...userData });
+        } catch (error) {
+          console.error("ユーザーデータ取得エラー:", error);
+        }
       } else {
         setUser(null);
       }
+
       setLoading(false);
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, [router]);
 
   return {
     signUp,

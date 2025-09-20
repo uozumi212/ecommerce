@@ -1,88 +1,67 @@
 import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { supabase, User } from "./utils/supabaseClient";
 
 export async function middleware(req: NextRequest) {
+  // コールバックルートはスキップ
+  if (req.nextUrl.pathname === "/auth/callback") {
+    console.log("コールバックルートをスキップします");
+    return NextResponse.next();
+  }
+
+  // リクエストからレスポンスを作成
   const res = NextResponse.next();
-  const supabase = createMiddlewareClient(
-    { req, res },
-    {
-      supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-      supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_KEY,
-    }
-  );
+
+  // ミドルウェア用のSupabaseクライアント作成
+  const supabase = createMiddlewareClient({ req, res });
+
+  // すべてのリクエストCookieをログに出力（開発用）
+  // console.log(
+  //   "リクエストCookies:",
+  //   req.cookies.getAll().map((c) => c.name)
+  // );
 
   try {
-    // const {
-    //   data: { session },
-    //   error,
-    // } = await supabase.auth.getSession();
-    // if (error) {
-    //   console.error("認証セッションの取得に失敗しました:", error);
-    //   return NextResponse.json(
-    //     { error: "エラーが発生しました" },
-    //     { status: 500 }
-    //   );
-    // }
-    // // const session = data?.session;
+    // セッションの取得
+    const { data, error } = await supabase.auth.getSession();
 
-    // // 未認証ユーザーをログインページにリダイレクト
-    // // if (!session && req.nextUrl.pathname.startsWith("/auth")) {
-    // //   return NextResponse.redirect(new URL("/auth/login", req.url));
-    // // }
-    // console.log("session:", session);
-    // if (req.nextUrl.pathname === "/auth/siginin") {
-    //   if (session) {
-    //     // ログイン済みの場合は商品一覧ページへ
-    //     return NextResponse.redirect(new URL("/products", req.url));
-    //   }
+    if (error) {
+      console.error("セッション取得エラー:", error);
+    }
 
-    //   // 未ログインの場合はログインぺージヘ
-    //   return res;
-    // }
+    // console.log("ミドルウェア内のセッション:", data.session ? "あり" : "なし");
 
-    // // 認証済みユーザーを一覧ページにリダイレクト
-    // if (
-    //   session &&
-    //   (req.nextUrl.pathname.startsWith("/products") ||
-    //     req.nextUrl.pathname.startsWith("/auth/signup"))
-    // ) {
-    //   return NextResponse.redirect(new URL("/products", req.url));
-    // }
+    // 保護されたルートへのアクセスチェック
+    if (req.nextUrl.pathname === "/products/new") {
+      if (!data.session) {
+        // console.log("セッションなし - ログインページへリダイレクト");
+        return NextResponse.redirect(new URL("/auth/signin", req.url));
+      }
 
-    // // 保護されたルートへのアクセス時の処理
-    // if (req.nextUrl.pathname === "/products/new") {
-    //   console.log("session:", session);
-    //   if (!session) {
-    //     // 未ログインの場合はログインページへ
-    //     return NextResponse.redirect(new URL("/", req.url));
-    //   }
+      // 以下は変更なし
+      // ...
+    }
 
-    //   // ユーザーのロール情報を取得
-    //   const { data: user, error } = await supabase
-    //     .from("users")
-    //     .select("role")
-    //     .eq("id", session.user.id)
-    //     .single();
-
-    //   console.log("user:", user, "error:", error);
-
-    //   if (user?.role !== 1) {
-    //     return NextResponse.redirect(new URL("/", req.url));
-    //   }
-    // }
+    // 認証パスの処理（コールバックを除く）
+    if (
+      req.nextUrl.pathname.startsWith("/auth") &&
+      req.nextUrl.pathname !== "/auth/callback"
+    ) {
+      if (data.session) {
+        // console.log(
+        //   "認証済みユーザーがauth/*にアクセス - ホームへリダイレクト"
+        // );
+        return NextResponse.redirect(new URL("/", req.url));
+      }
+    }
 
     return res;
   } catch (error) {
-    console.error("エラーが発生しました:", error); // エラーをコンソールに出力
-    return NextResponse.json(
-      { error: "エラーが発生しました" },
-      { status: 500 }
-    );
+    console.error("ミドルウェアエラー:", error);
+    return NextResponse.redirect(new URL("/", req.url));
   }
 }
 
 export const config = {
-  matcher: ["/auth/:path*", "/products/:path*", "/products/new"],
+  matcher: ["/auth/:path*", "/products/new"],
 };

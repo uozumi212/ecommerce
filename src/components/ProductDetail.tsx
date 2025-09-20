@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useAuth } from "./UseAuth";
 import { Product, supabase } from "../utils/supabaseClient";
 import FavoriteButton from "../components/FavoriteButton";
-import { loadStripe } from "@stripe/stripe-js";
+import { getStripe } from "../utils/stripeClient";
 import Layout from "./Layout";
 
 interface ProductDetailProps {
@@ -21,9 +21,6 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const { user, signOut, loading } = useAuth();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const stripePromise = loadStripe(
-    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-  );
 
   useEffect(() => {
     if (user) {
@@ -74,7 +71,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
       }
 
       const { sessionId } = await response.json();
-      const stripe = await stripePromise;
+      const stripe = await getStripe();
       if (!stripe) {
         throw new Error("Stripeの初期化に失敗しました");
       }
@@ -145,7 +142,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           <span>商品詳細</span>
         </nav>
 
-        <div className="text-center">
+        <div className="text-center relative">
           {/* 商品画像 */}
           <div>
             {product.image_url && !imageError ? (
@@ -154,9 +151,9 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 alt={product.name}
                 width={500}
                 height={400}
-                className="mx-auto"
+                className="mx-auto object-cover"
                 onError={() => setImageError(true)}
-                priority
+                priority={true}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -205,12 +202,14 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 </h2>
               </div>
             )}
+            <div className="flex justify-center">
+              <FavoriteButton productId={product.id} />
+            </div>
           </div>
         </div>
 
         {/* 購入ボタン */}
-        <div className="text-center">
-          <FavoriteButton productId={product.id} />
+        <div className="text-center justify-center">
           <button
             onClick={handleBuyNow}
             className="w-1/4 mt-2 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"

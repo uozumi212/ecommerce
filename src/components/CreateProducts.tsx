@@ -108,7 +108,7 @@ const ProductRegistrationForm: React.FC = () => {
       const productData: Omit<Product, "id" | "created_at" | "updated_at"> = {
         name: data.name,
         price: data.price,
-        image_url: imageUrl,
+        image_url: imageUrl ?? "",
         description: data.description,
         quantity: data.quantity,
       };
@@ -196,14 +196,14 @@ const ProductRegistrationForm: React.FC = () => {
           )}
           {/* 画像プレビュー */}
           {previewImage && (
-            <div className="mt-4">
+            <div className="mt-4 relative">
               <p className="text-sm text-gray-600 mb-2">プレビュー：</p>
               <Image
                 src={previewImage as string}
                 alt="プレビュー"
-                className="w-full h-64 object-cover"
-                width={256}
-                height={256}
+                className="object-cover"
+                fill
+                priority={true}
               />
             </div>
           )}

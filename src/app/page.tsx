@@ -3,6 +3,7 @@ import React from "react";
 import ProductList from "@/app/products/index/page";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import ProductListComponent from "@/components/ProductListComponent";
 
 export default function Home() {
   const searchParams = useSearchParams();
@@ -48,7 +49,8 @@ export default function Home() {
           </button>
         </div>
       )}
-      <ProductList />
+      {/* <ProductList /> */}
+      <ProductListComponent />
     </div>
   );
 }

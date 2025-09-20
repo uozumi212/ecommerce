@@ -4,6 +4,8 @@ import { useAuth } from "@/components/UseAuth";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Layout from "@/components/Layout"; // Layoutコンポーネントをインポート
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const schema = yup.object({
   email: yup
@@ -23,7 +25,8 @@ type SignInFormData = {
 
 export default function SignInPage() {
   // SignInFormからSignInPageに変更
-  const { signIn, loading, error } = useAuth();
+  const { signIn, loading, error, user } = useAuth();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -32,8 +35,21 @@ export default function SignInPage() {
     resolver: yupResolver(schema),
   });
 
+  // セッションがある場合はリダイレクト
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
+
   const onSubmit = async (data: SignInFormData) => {
-    await signIn(data.email, data.password);
+    try {
+      await signIn(data.email, data.password);
+      // 成功したらクライアント側のステートを更新するために強制リフレッシュ
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Login error:", err);
+    }
   };
 
   return (

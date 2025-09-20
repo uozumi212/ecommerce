@@ -93,7 +93,7 @@ export default function FavoriteButton({ productId }: FavoriteButtonProps) {
     <button
       onClick={toggleFavorite}
       disabled={loading}
-      className="mt-4 flex items-center ml-12 text-white"
+      className="mt-4 flex items-center text-white"
       aria-label={isFavorite ? "いいねを解除する" : "いいねする"}
     >
       {isFavorite ? (
